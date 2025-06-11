@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: serverless-demo
+data:
+  app.conf: |
+    [broker]
+    url = http://broker-ingress.knative-eventing.svc.cluster.local/serverless-demo/broker

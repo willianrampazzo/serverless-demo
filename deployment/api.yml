@@ -1,0 +1,36 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: api
+  namespace: serverless-demo
+spec:
+  template:
+    spec:
+      volumes:
+        - name: app-config
+          configMap:
+            name: app-config
+      containers:
+        - name: api
+          volumeMounts:
+            - name: app-config
+              mountPath: /etc/app
+          image: default-route-openshift-image-registry.apps-crc.testing/serverless-demo/serverless:latest
+          port:
+            - containerPort: 8080
+          command:
+            [
+              "uvicorn",
+              "app.api:app",
+              "--host",
+              "0.0.0.0",
+              "--port",
+              "8080",
+            ]
+    metadata:
+      annotations:
+        autoscaling.knative.dev/min-scale: "1"
+        autoscaling.knative.dev/max-scale: "2"
+  config:
+    autoscaler:
+      enable-scale-to-zero: "false"
